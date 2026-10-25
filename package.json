@@ -8,6 +8,8 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "openai": "^4.86.1"
