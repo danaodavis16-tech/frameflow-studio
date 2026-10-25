@@ -2,66 +2,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FrameFlow Studio</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #101114;
-      color: #f5f2ed;
-      font-family: system-ui, sans-serif;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-    main { max-width: 680px; width: 100%; }
-    .tag {
-      color: #ff715b;
-      text-transform: uppercase;
-      letter-spacing: .18em;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    h1 { font-size: clamp(40px, 8vw, 68px); margin: 16px 0; }
-    p { color: #b7b5b1; line-height: 1.7; }
-    button {
-      background: #ff715b;
-      color: #171313;
-      border: 0;
-      padding: 14px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    #status { margin-top: 18px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FrameFlow Studio</title>
+<style>
+:root{--bg:#101114;--panel:#191a1f;--line:#303139;--text:#f5f2ed;--muted:#aaaab4;--accent:#ff715b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+header{padding:24px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-size:21px;font-weight:800;letter-spacing:-.04em}.brand span{color:var(--accent)}
+.status{font-size:12px;color:#72e0ae}
+main{max-width:1200px;margin:auto;padding:32px 5%}
+.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:800}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.05;margin:12px 0}
+p{color:var(--muted);line-height:1.6}
+.layout{display:grid;grid-template-columns:minmax(0, .85fr) minmax(0,1.4fr);gap:20px;margin-top:28px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+h2{font-size:17px;margin:0 0 16px}
+label{display:block;font-size:12px;color:var(--muted);margin:15px 0 7px}
+input,textarea,select{width:100%;background:#101114;color:var(--text);border:1px solid #393a44;border-radius:8px;padding:12px;font:inherit}
+textarea{min-height:125px;resize:vertical}
+button{border:0;border-radius:8px;background:var(--accent);color:#171313;font-weight:800;padding:12px 15px;cursor:pointer}
+button.secondary{background:#282930;color:var(--text);border:1px solid #42434d}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.frame{background:#111216;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.art{aspect-ratio:16/9;background:radial-gradient(ellipse at 50% 100%,#694c43,#25242c 65%);display:grid;place-items:center;font-size:38px}
+.framebody{padding:12px}.framebody strong{font-size:13px}.framebody p{font-size:12px;margin:6px 0 0}
+.note{font-size:12px;color:var(--muted);margin-top:16px}
+#message{white-space:pre-wrap;color:#ffb9a9;font-size:13px;margin-top:12px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}header{align-items:flex-start}}
+</style>
 </head>
 <body>
-  <main>
-    <div class="tag">Cinematic story development</div>
-    <h1>FrameFlow Studio</h1>
-    <p>Build scenes, design storyboard frames, and bring your stories to life with AI-assisted filmmaking.</p>
-    <button id="check">Check server connection</button>
-    <p id="status">Ready to test the connection.</p>
-  </main>
-  <script>
-    document.getElementById("check").addEventListener("click", async () => {
-      const status = document.getElementById("status");
-      status.textContent = "Checking...";
-      try {
-        const response = await fetch("/api/health");
-        const data = await response.json();
-        status.textContent = data.ok
-          ? "Connected to the FrameFlow server."
-          : "Server responded, but needs checking.";
-      } catch {
-        status.textContent = "Cannot reach the server yet. Check deployment.";
-      }
-    });
-  </script>
+<header>
+  <div class="brand">FRAME<span>FLOW</span> STUDIO</div>
+  <div class="status" id="connection">● Checking server…</div>
+</header>
+<main>
+  <div class="eyebrow">CINEMATIC STORY DEVELOPMENT</div>
+  <h1>Turn a scene into<br> a visual story.</h1>
+  <p>Plan your shots, organize scenes, and build a cinematic storyboard with a consistent 3D-cartoon art direction.</p>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>01 / Scene setup</h2>
+      <label for="project">Project title</label>
+      <input id="project" value="My Animated Film">
+      <label for="style">Visual style</label>
+      <select id="style">
+        <option>Stylized 3D cartoon film</option>
+        <option>Stop-motion inspired animation</option>
+        <option>Graphic-novel cinematic</option>
+        <option>Realistic live-action film</option>
+      </select>
+      <label for="scene">Describe your scene</label>
+      <textarea id="scene" placeholder="Example: A young man sitting on a couch receives a phone call, talks briefly, walks outside, gets into his car, and drives away."></textarea>
+      <label for="shots">Number of storyboard frames</label>
+      <select id="shots">
+        <option value="3">3 frames</option>
+        <option value="4" selected>4 frames</option>
+        <option value="6">6 frames</option>
+        <option value="8">8 frames</option>
+      </select>
+      <div class="actions">
+        <button id="build">Build shot list</button>
+        <button class="secondary" id="clear">Clear</button>
+      </div>
+      <p class="note">Start by describing one scene. Break longer stories into separate scenes to keep the shots focused.</p>
+    </section>
+
+    <section class="panel">
+      <h2>02 / Storyboard</h2>
+      <div id="frames" class="grid">
+        <div class="frame">
+          <div class="art">🎬</div>
+          <div class="framebody"><strong>Your first shot</strong><p>Describe a scene and choose “Build shot list” to begin.</p></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="generate">Generate AI frames</button>
+        <button class="secondary" id="motion">Make motion clip</button>
+      </div>
+      <div id="message"></div>
+      <p class="note">AI image and video generation will work after their provider integrations and credentials are configured on the server.</p>
+    </section>
+  </div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let shots=[];
+async function checkServer(){
+ try{
+  const r=await fetch('/api/health');
+  $('connection').textContent=r.ok?'● Server connected':'● Server needs attention';
+ }catch{$('connection').textContent='● Server unavailable';}
+}
+function buildShots(){
+ const scene=$('scene').value.trim();
+ if(!scene){$('message').textContent='Describe your scene first.';return;}
+ const count=Number($('shots').value);
+ const moments=[
+  'Establishing wide shot',
+  'Character action and reaction',
+  'Important story detail',
+  'Closing cinematic shot',
+  'Over-the-shoulder shot',
+  'Close-up emotional beat',
+  'Dynamic movement shot',
+  'Final scene composition'
+ ];
+ shots=Array.from({length:count},(_,i)=>({
+  number:i+1,
+  title:moments[i]||`Shot ${i+1}`,
+  prompt:`${scene}. Shot ${i+1}: ${moments[i]||'cinematic composition'}. Visual style: ${$('style').value}. Maintain consistent characters, clothing, lighting, and location.`
+ }));
+ $('frames').innerHTML=shots.map(s=>`
+  <article class="frame">
+   <div class="art">🎞️</div>
+   <div class="framebody"><strong>${s.number}. ${s.title}</strong><p>${s.prompt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p></div>
+  </article>`).join('');
+ $('message').textContent=`Created ${count} shot descriptions. These are planning cards, not generated images yet.`;
+}
+$('build').addEventListener('click',buildShots);
+$('clear').addEventListener('click',()=>{
+ $('scene').value='';shots=[];$('frames').innerHTML='';
+ $('message').textContent='Scene cleared.';
+});
+$('generate').addEventListener('click',async()=>{
+ if(!shots.length){buildShots();if(!shots.length)return;}
+ $('message').textContent='Contacting the image-generation service…';
+ try{
+  const r=await fetch('/api/storyboard/images',{
+   method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({frames:shots})
+  });
+  const data=await r.json();
+  if(!r.ok)throw new Error(data.error||'Image generation failed.');
+  $('frames').innerHTML=data.frames.map(f=>`
+   <article class="frame">
+    <img src="${f.imageUrl}" alt="Generated storyboard frame" style="width:100%;display:block">
+    <div class="framebody"><strong>${f.title||'Storyboard frame'}</strong></div>
+   </article>`).join('');
+  $('message').textContent='AI frames generated.';
+ }catch(e){$('message').textContent='Image generation unavailable: '+e.message;}
+});
+$('motion').addEventListener('click',async()=>{
+ $('message').textContent='Motion clips are not configured on the server yet. We will connect the video provider next.';
+});
+checkServer();
+</script>
 </body>
 </html>
