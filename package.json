@@ -5,12 +5,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "build": "esbuild public/renderer.js --bundle --format=esm --outfile=public/renderer.bundle.js && cp node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.js public/ffmpeg-core.js && cp node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.wasm public/ffmpeg-core.wasm && cp node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.worker.js public/ffmpeg-core.worker.js",
+    "start": "npm run build && node server.js"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "dotenv": "^16.4.7",
+    "esbuild": "^0.25.0",
     "express": "^4.21.2",
     "openai": "^4.86.1"
   }
